@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Flowbite Starter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+	 <div class="w-[640px] space-y-4">	
+	   <div class="w-full bg-gray-200 border border-gray-300 rounded-md px-4 py-2 min-h-[40px]">
+			<div class="text-center">
+				<span>Правила порядка</span>
+			</div>
+			<div class="w-full">
+
+<div class="grid grid-cols-[1fr_auto_1fr_auto_1fr] gap-2 items-center">
+
+    <select id="select1" weight=0 onchange="updateOptions(this)"
+        class="w-full p-2 border border-gray-300 rounded-md">
+        <option value="">Выбери</option>
+        <option value="К">К</option>
+        <option value="З">З</option>
+        <option value="С">С</option>
+    </select>
+
+    <div class="text-gray-500 font-bold px-1 text-center">
+        &lt;
+    </div>
+
+    <select id="select2" weight=1 onchange="updateOptions(this)"
+        class="w-full p-2 border border-gray-300 rounded-md">
+        <option value="">Выбери</option>
+        <option value="К">К</option>
+        <option value="З">З</option>
+        <option value="С">С</option>
+    </select>
+
+    <div class="text-gray-500 font-bold px-1 text-center">
+        &lt;
+    </div>
+
+    <select id="select3" weight=2 onchange="updateOptions(this)"
+        class="w-full p-2 border border-gray-300 rounded-md">
+        <option value="">Выбери</option>
+        <option value="К">К</option>
+        <option value="З">З</option>
+        <option value="С">С</option>
+    </select>
+
+</div>
+
+</div>
+			
+			
+	   </div>
+	   <div id="output" class="w-full bg-gray-200 border border-gray-300 text-sm rounded-md px-4 py-2 min-h-[40px] flex flex-wrap gap-2"></div>
+	   <div class="grid grid-cols-3 w-full gap-2">
+		   <button id="redButton" type="button"
+				onclick="addColor(this, 'text-red-500')"
+				class="text-body bg-red-500 border border-default hover:bg-neutral-secondary-medium hover:text-heading focus:ring-3 focus:ring-neutral-tertiary-soft font-medium leading-5 rounded-md text-sm px-3 py-2 focus:outline-none active:bg-red-700">
+				К
+		   </button>
+		  <button id="greenButton" type="button" 
+			  onclick="addColor(this, 'text-green-500')"
+			  class="text-body bg-green-500 border border-default hover:bg-neutral-secondary-medium hover:text-heading focus:ring-3 focus:ring-neutral-tertiary-soft font-medium leading-5 rounded-md text-sm px-3 py-2 focus:outline-none active:bg-green-700">
+				З
+		  </button>
+		  <button id="blueButton" type="button" 
+			  onclick="addColor(this, 'text-blue-500')"
+			  class="text-body bg-blue-500 border border-default hover:bg-neutral-secondary-medium hover:text-heading focus:ring-3 focus:ring-neutral-tertiary-soft font-medium leading-5 rounded-md text-sm px-3 py-2 focus:outline-none active:bg-blue-700">
+				С
+		  </button>	
+		  </div>
+		  <button id="sendDataButton" onclick="sendData()"
+    class="mt-4 w-full bg-gray-400 hover:bg-gray-600 active:bg-gray-600 text-white font-medium py-2 rounded-md transition-all duration-150 transform active:scale-95">
+    Сортировать
+</button>
+	   <div id="result" class="w-full bg-gray-200 border border-gray-300 text-sm rounded-md px-4 py-2 min-h-[40px] flex flex-wrap gap-2"></div>
+	   <button id="clearButton" onclick="clearData()"
+    class="mt-4 w-full bg-yellow-400 hover:bg-yellow-600 active:bg-yellow-600 text-white font-medium py-2 rounded-md transition-all duration-150 transform active:scale-95">
+    Очистить
+</button>
+
+<script>
+ function clearData(){
+	function clearChilds(id) {
+		const input = document.getElementById(id);
+		input.replaceChildren();
+	}
+	clearChilds("output");
+	clearChilds("result");
+	getSelects().forEach(select => {
+		select.selectedIndex = 0;
+     });
+ }
+
+ function addColor(button, className) {
+	 const text = button.textContent.trim()
+     const input = document.getElementById("output");
+     const span = document.createElement("span");
+     span.className = className + " font-mediuam";
+     span.textContent = text;
+	 span.setAttribute('meta',className);
+     input.appendChild(span);
+ }
+
+function getSelects() {
+return [
+         document.getElementById("select1"),
+         document.getElementById("select2"),
+         document.getElementById("select3")
+     ];
+}
+
+ function updateOptions(changedSelect) {
+
+     const newValue = changedSelect.value;
+     if (newValue === "") return;
+
+     getSelects().forEach(select => {
+         if (select !== changedSelect && select.value === newValue) {
+             select.value = "";
+         }
+     });
+	 }
+
+     function getOrderRule() {
+         const rule = {};
+         getSelects().forEach((select, index) => {
+             if (select.value) {
+                 rule[select.value] = select.getAttribute("weight");
+             }
+         });
+
+         return rule;
+     }
+
+
+
+
+     function getOutputValues() {
+        const container = document.getElementById("output");
+        const spans = container.querySelectorAll("span");
+
+		return Array.from(spans).map(span => ({
+			value: span.textContent.trim(),
+			meta: span.getAttribute('meta')
+		}));
+     }
+     async function sendData() {
+
+         const requestData = {
+             "order_rule": getOrderRule(),
+             "values": getOutputValues()
+         };
+
+         try 
+		 {
+             const response = await fetch("http://127.0.0.1/sort", {
+                 method: "POST",
+                 headers: {
+                     "Content-Type": "application/json"
+                 },
+                 body: JSON.stringify(requestData)
+             });
+
+             if (!response.ok) {
+                 throw new Error("Request failed: " + response.status);
+             }
+
+             const result = await response.json();
+
+			document.getElementById("result").innerHTML =
+				result.sorted.map(v => `<span class="${v.meta}">${v.value}</span>`).join(" ");
+         } catch (error) {
+             console.error("Ошибка запроса:", error);
+         }
+     }
+    </script>
+
+    <!-- Flowbite JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.js"></script>
+
+</body>
+</html>
