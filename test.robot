@@ -52,43 +52,43 @@ Click Blue Button Multiple Times
     Click Element    ${blue_button_id}
     END
 
+Report Known Issue
+    [Arguments]    ${issue_number}
+    Run Keyword If    '${TEST STATUS}' == 'FAIL'    Fail    Known issue: ${issue_number}
+
 *** Test Cases ***
 
 Check Web page Title - Test 1
-    #[Documentation] Проверка названия вкладки страницы
-    #[Documentation] Этот тест проверяет, что название вкладки страницы соотвествует Тестовое задание
+    [Documentation]     Проверка названия вкладки страницы "Тестовое задание"
+    [Teardown]    Report Known Issue    Bug #5437
     Open Browser    https://dynamic-dolphin-426efe.netlify.app/  Chrome
     ${tab_title}=   Get Title
     Should Be Equal    ${tab_title}    Тестовое задание
     Close Browser
 
 Check Order Title - Test 2
-    #[Documentation] Проверка заголовка "Правила порядка"
-    #[Documentation] Этот тест проверяет, что название заголовка соотвествует Правила порядка
+    [Documentation]    Проверка заголовка "Правила порядка": название заголовка соотвествует Правила порядка
     Open Browser    https://dynamic-dolphin-426efe.netlify.app/  Chrome
-    ${title_text}=   Get Text    xpath=//div[@class='text-center']/span
+    ${title_text}=   Get Text    xpath=//div[@class="text-center py-3"]/span
     Should Be Equal    ${title_text}    Правила порядка
     Close Browser
 
 Check Empty Run Sorting - Test 3
-    #[Documentation] Проверка "пустого" запуска
-    #[Documentation] Этот тест проверяет, что при нажатии "Сортировать" и незаполненных данных, приложение не крашится
+    [Documentation]   Проверка "пустого" запуска (при нажатии "Сортировать" и незаполненных данных, приложение не крашится)
     Open Browser    https://dynamic-dolphin-426efe.netlify.app/  Chrome
     Click Button  id=${sort_button_id}
     Sleep    3 seconds
     Close Browser
 
 Check Empty Run Clear - Test 4
-    #[Documentation] Проверка "пустого" запуска
-    #[Documentation] Этот тест проверяет, что при нажатии "Очистить" и незаполненных данных, приложение не крашится
+    [Documentation]   Проверка "пустого" запуска очистки (при нажатии "Очистить" и незаполненных данных, приложение не крашится)
     Open Browser    https://dynamic-dolphin-426efe.netlify.app/  Chrome
     Click Button  id=${clear_button_id}
     Sleep    3 seconds
     Close Browser
 
 Check Dropdown Options - Test 5
-    #[Documentation] Проверка элементов выпадающих списков
-    #[Documentation] Этот тест проверяет, что все элементы выпадающих списков (select1, select2, select3) корректно отображаются и выбираются.
+    [Documentation]   Проверка элементов выпадающих списков (все элементы выпадающих списков (select1, select2, select3) корректно отображаются и выбираются)
     Open Browser    https://dynamic-dolphin-426efe.netlify.app/  Chrome
     Sleep    3 seconds
     FOR    ${dropdown_id}    IN    @{dropdown_ids}
@@ -100,8 +100,7 @@ Check Dropdown Options - Test 5
     Close Browser
 
 Check Color Buttons Options - Test 6
-    #[Documentation] Проверка кнопок "К","С","З"
-    #[Documentation] Этот тест проверяет, что имена кнопок корректны и при их нажатии прописывается корректный элемент
+    [Documentation]   Проверка кнопок "К","С","З" (имена кнопок корректны и при их нажатии прописывается корректный элемент)
     Open Browser    https://enchanting-dango-f1fff3.netlify.app  Chrome
 
     #проверка наименований кнопок
@@ -124,8 +123,7 @@ Check Color Buttons Options - Test 6
     Close Browser
 
 Check Sequence Options - Test 7
-    #[Documentation] Проверка поля ввода последовательности
-    #[Documentation] Этот тест проверяет, поле ввода пустое и недоступно для редактирования с клавиатуры
+    [Documentation]   Проверка поля ввода последовательности (поле ввода пустое и недоступно для редактирования с клавиатуры)
     Open Browser    https://enchanting-dango-f1fff3.netlify.app  Chrome
 
     # Проверка, что в строке-входной последовательности пусто
@@ -138,8 +136,7 @@ Check Sequence Options - Test 7
     Close Browser
 
 Check Color of Sequence - Test 8
-    #[Documentation] Проверка поля ввода последовательности
-    #[Documentation] Цвет символа соотвествует названию буквы К-красный, З-зеленый, С-синий
+    [Documentation]  Проверка поля ввода последовательности (Цвет символа соотвествует названию буквы К-красный, З-зеленый, С-синий)
     Open Browser    https://enchanting-dango-f1fff3.netlify.app  Chrome
 
     Select From List By Value  id:select1  К
@@ -160,8 +157,8 @@ Check Color of Sequence - Test 8
     Close Browser
 
 Check Sort Button Options - Test 9
-    #[Documentation] Проверка кнопки "Сортировать"
-    #[Documentation] Этот тест проверяет, что имя кнопки корректно и при ее нажатии прописывается результат
+    [Documentation]    Проверка кнопки "Сортировать" : имя кнопки корректно и при ее нажатии прописывается результат
+    [Teardown]    Report Known Issue    Bug #5430
     Open Browser    https://enchanting-dango-f1fff3.netlify.app  Chrome
 
     #проверка наименования кнопки
@@ -189,8 +186,7 @@ Check Sort Button Options - Test 9
     Close Browser
 
 Check Result Options - Test 10
-    #[Documentation] Проверка поля вывода результата
-    #[Documentation] Этот тест проверяет, поле вывода пустое и недоступно для редактирования
+    [Documentation]  Проверка поля вывода результата (поле вывода пустое и недоступно для редактирования)
     Open Browser    https://enchanting-dango-f1fff3.netlify.app  Chrome
 
     # Проверка, что в строке-результате пусто
@@ -203,8 +199,7 @@ Check Result Options - Test 10
     Close Browser
 
 Check Color of Result - Test 11
-    #[Documentation] Проверка поля вывода результата
-    #[Documentation] Цвет символа соотвествует названию буквы К-красный, З-зеленый, С-синий
+    [Documentation]  Проверка поля вывода результата (цвет символа соотвествует названию буквы К-красный, З-зеленый, С-синий)
     Open Browser    https://enchanting-dango-f1fff3.netlify.app  Chrome
 
     Select From List By Value  id:select1  З
@@ -240,8 +235,7 @@ Check Color of Result - Test 11
     Close Browser
 
 Check Clear Button Options - Test 12
-    #[Documentation] Проверка кнопки "Очистить"
-    #[Documentation] Этот тест проверяет, что имя кнопки корректно и при ее нажатии выпадающие списки принимаю дефолтное значение, а поля становятся пустыми
+    [Documentation]  Проверка кнопки "Очистить" (имя кнопки корректно и при ее нажатии выпадающие списки принимаю дефолтное значение, а поля становятся пустыми)
     Open Browser    https://enchanting-dango-f1fff3.netlify.app  Chrome
 
     #проверка наименования кнопки
@@ -278,7 +272,7 @@ Check Clear Button Options - Test 12
     Close Browser
 
 Check Sorting Rule - Test 13
-    #[Documentation] Проверка правильности сортировки
+    [Documentation]  Проверка правильности сортировки
     Open Browser    https://enchanting-dango-f1fff3.netlify.app  Chrome
     # Выбор значений значений в выпадающих списках
     Select From List By Value  id:select1  К
@@ -300,7 +294,7 @@ Check Sorting Rule - Test 13
     Close Browser
 
 Check Hight Loaded Sorting - Test 14
-    #[Documentation] Проверка правильности сортировки при большой нагрузке
+    [Documentation]  Проверка правильности сортировки при большой нагрузке
     Open Browser    https://enchanting-dango-f1fff3.netlify.app  Chrome
     # Выбор значений значений в выпадающих списках
     Select From List By Value  id:select1  З
