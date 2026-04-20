@@ -10,14 +10,14 @@
 <body class="bg-gray-100 flex items-center justify-center h-screen">
 	 <div class="w-[640px] space-y-4">	
 	   <div class="w-full bg-gray-200 border border-gray-300 rounded-md px-4 py-2 min-h-[40px]">
-			<div class="text-center">
+			<div class="text-center py-3">
 				<span>Правила порядка</span>
 			</div>
 			<div class="w-full">
 
 <div class="grid grid-cols-[1fr_auto_1fr_auto_1fr] gap-2 items-center">
 
-    <select id="select1" weight=0 onchange="updateOptions(this)"
+    <select id="select1" rang=0 onchange="updateOptions(this)"
         class="w-full p-2 border border-gray-300 rounded-md">
         <option value="">Выбери</option>
         <option value="К">К</option>
@@ -29,7 +29,7 @@
         &lt;
     </div>
 
-    <select id="select2" weight=1 onchange="updateOptions(this)"
+    <select id="select2" rang=1 onchange="updateOptions(this)"
         class="w-full p-2 border border-gray-300 rounded-md">
         <option value="">Выбери</option>
         <option value="К">К</option>
@@ -41,7 +41,7 @@
         &lt;
     </div>
 
-    <select id="select3" weight=2 onchange="updateOptions(this)"
+    <select id="select3" rang=2 onchange="updateOptions(this)"
         class="w-full p-2 border border-gray-300 rounded-md">
         <option value="">Выбери</option>
         <option value="К">К</option>
@@ -58,17 +58,17 @@
 	   <div id="output" class="w-full bg-gray-200 border border-gray-300 text-sm rounded-md px-4 py-2 min-h-[40px] flex flex-wrap gap-2"></div>
 	   <div class="grid grid-cols-3 w-full gap-2">
 		   <button id="redButton" type="button"
-				onclick="addColor(this, 'text-red-500')"
+				onclick="addLetter(this, 'text-red-500')"
 				class="text-body bg-red-500 border border-default hover:bg-neutral-secondary-medium hover:text-heading focus:ring-3 focus:ring-neutral-tertiary-soft font-medium leading-5 rounded-md text-sm px-3 py-2 focus:outline-none active:bg-red-700">
 				К
 		   </button>
 		  <button id="greenButton" type="button" 
-			  onclick="addColor(this, 'text-green-500')"
+			  onclick="addLetter(this, 'text-green-500')"
 			  class="text-body bg-green-500 border border-default hover:bg-neutral-secondary-medium hover:text-heading focus:ring-3 focus:ring-neutral-tertiary-soft font-medium leading-5 rounded-md text-sm px-3 py-2 focus:outline-none active:bg-green-700">
 				З
 		  </button>
 		  <button id="blueButton" type="button" 
-			  onclick="addColor(this, 'text-blue-500')"
+			  onclick="addLetter(this, 'text-blue-500')"
 			  class="text-body bg-blue-500 border border-default hover:bg-neutral-secondary-medium hover:text-heading focus:ring-3 focus:ring-neutral-tertiary-soft font-medium leading-5 rounded-md text-sm px-3 py-2 focus:outline-none active:bg-blue-700">
 				С
 		  </button>	
@@ -85,28 +85,29 @@
 
 <script>
  function clearData(){
-	function clearChilds(id) {
+	function clearChilds(id) {                                  //функция для очистки каждого элемента по его id
 		const input = document.getElementById(id);
-		input.replaceChildren();
+		input.replaceChildren();                                //удаление всех дочерних элементов в родительском
 	}
-	clearChilds("output");
-	clearChilds("result");
-	getSelects().forEach(select => {
-		select.selectedIndex = 0;
+	clearChilds("output");                                      //очистка поля с введеной последовательностью
+	clearChilds("result");                                      //очистка поля -результата
+	getSelects().forEach(select => {                            //установка всем выпадающим спискам начального значения
+		select.selectedIndex = 0;                               
      });
  }
 
- function addColor(button, className) {
-	 const text = button.textContent.trim()
-     const input = document.getElementById("output");
-     const span = document.createElement("span");
-     span.className = className + " font-mediuam";
-     span.textContent = text;
-	 span.setAttribute('meta',className);
-     input.appendChild(span);
+ function addLetter(button, letterColor) {                         //функция добавления буквы с соответствующим цветом во входную последовательность
+	 const buttonText = button.textContent.trim()
+     const inputSequenceField = document.getElementById("output");
+
+     const newLetterSpan = document.createElement("span");                  //создание элемента для добавления буквы 
+     newLetterSpan.className = letterColor + " font-medium";
+     newLetterSpan.textContent = buttonText;
+	 newLetterSpan.setAttribute('meta',letterColor);
+     inputSequenceField.appendChild(span);
  }
 
-function getSelects() {
+function getSelects() {                                         //функция, возвращает  все элементы- выпадающие списки 
 return [
          document.getElementById("select1"),
          document.getElementById("select2"),
@@ -114,51 +115,48 @@ return [
      ];
 }
 
- function updateOptions(changedSelect) {
+ function updateOptions(changedSelect) {                        // функция, не позволяющая выбрать одинаковые правила в трех/двух выпадающх списках
 
      const newValue = changedSelect.value;
-     if (newValue === "") return;
+     if (newValue === "") return;                              //выход, если ничего не выбрано
 
-     getSelects().forEach(select => {
-         if (select !== changedSelect && select.value === newValue) {
+     getSelects().forEach(select => {                          //если выбрано, то по всем вып.спискам проверка
+         if (select !== changedSelect && select.value === newValue) {       //если не текущий вып.список и значение совпадает совпадает, то сбрасывать его
              select.value = "";
          }
      });
 	 }
 
-     function getOrderRule() {
+     function getOrderRule() {                                  //функция для записи правила сортировки
          const rule = {};
-         getSelects().forEach((select, index) => {
+         getSelects().forEach((select, index) => {              //из каждого выбранного значения вып.списка 
              if (select.value) {
-                 rule[select.value] = select.getAttribute("weight");
+                 rule[select.value] = select.getAttribute("rang"); //записывается value например К и ранг этого value
              }
          });
 
          return rule;
      }
 
-
-
-
-     function getOutputValues() {
+     function getOutputValues() {                               //функция получения заданной пользователем последовательности
         const container = document.getElementById("output");
         const spans = container.querySelectorAll("span");
 
-		return Array.from(spans).map(span => ({
-			value: span.textContent.trim(),
-			meta: span.getAttribute('meta')
+		return Array.from(spans).map(span => ({                 //получить массив объектов
+			value: span.textContent.trim(),                     //состоящих из значения К,З или С
+			meta: span.getAttribute('meta')                     //и его цвета
 		}));
      }
-     async function sendData() {
+     async function sendData() {                                //отправка данных на backend
 
-         const requestData = {
+         const requestData = {                                  //запись тела запроса
              "order_rule": getOrderRule(),
              "values": getOutputValues()
          };
 
          try 
 		 {
-             const response = await fetch("https://sorting-backend-3o5o.onrender.com/sort", {
+             const response = await fetch("https://sorting-backend-3o5o.onrender.com/sort", {  //отправка запрос на сервер методом POST
                  method: "POST",
                  headers: {
                      "Content-Type": "application/json"
@@ -166,13 +164,13 @@ return [
                  body: JSON.stringify(requestData)
              });
 
-             if (!response.ok) {
+             if (!response.ok) {                                                            //если ответ неуспешный, то ошибка 
                  throw new Error("Request failed: " + response.status);
              }
 
-             const result = await response.json();
+             const result = await response.json();                                         //получен ответ в виде JSON
 
-			document.getElementById("result").innerHTML =
+			document.getElementById("result").innerHTML =                                  //отображение результата на странице
 				result.sorted.map(v => `<span class="${v.meta}">${v.value}</span>`).join(" ");
          } catch (error) {
              console.error("Ошибка запроса:", error);
